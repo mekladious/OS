@@ -1,0 +1,78 @@
+//MILESTONE 1
+
+	/*
+	//char line1 [80];
+	//char buffer[512];
+	//char line2[80];
+
+	//task 1
+	//printString("Enter a line: \0");
+
+	//task 2
+	//readString(line1);
+	//printString(line1);
+
+	//task 3
+	//readSector(buffer, 30);
+	//printString(buffer);
+
+	//task 4
+	//makeInterrupt21();
+	//interrupt(0x21,0,0,0,0);
+
+	//task 5
+	//makeInterrupt21();
+	//interrupt(0x21,1,buffer,30,0);
+	//interrupt(0x21,0,buffer,0,0);
+	//interrupt(0x21,2,buffer,30,0);
+	//interrupt(0x21,0,buffer,0,0);
+	//interrupt(0x21,5,buffer,0,0);
+
+	char buffer1[512];
+    	char line1[80];
+    	char buffer2[512];
+    	char line2[80];
+
+    	printString("Enter a line: \0");
+    	readString(line1);
+    	printString(line1);
+    	readSector(buffer1, 30);
+    	printString(buffer1);
+
+	makeInterrupt21();
+    	interrupt(0x21,1,line2,0,0);
+    	interrupt(0x21,0,line2,0,0);
+    	interrupt(0x21,3,buffer2,30,0);
+    	while(1);
+
+
+	while(1);
+	*/
+
+	//MILESTONE 2
+	//Step 1
+
+	/*char buffer[13312]; /*this is the maximum size of a file*/
+	/*makeInterrupt21();
+	interrupt(0x21, 3, "messag\0", buffer, 0); /*read the file into buffer*/
+	/*interrupt(0x21, 0, buffer, 0, 0); /*print out the file*/
+	/*while(1); /*hang up*/
+
+	//Step 2
+	//makeInterrupt21();
+	//interrupt(0x21, 4, "tstprg\0", 0x2000, 0);
+	//while(1);
+
+	//Step 3
+	/*makeInterrupt21();
+	interrupt(0x21, 4, "tstprg\0", 0x2000, 0);
+	interrupt(0x21, 5, 0, 0, 0);*/
+
+	//Step 4
+	//makeInterrupt21();
+	//interrupt(0x21, 3, "messag\0", buffer, 0); /*read the file into buffer*/
+	//interrupt(0x21, 0, buffer, 0, 0); /*print out the file*/
+	//interrupt(0x21, 4, "tstpr2\0", 0x2000, 0);
+	//interrupt(0x21, 5, 0, 0, 0);
+
+	//interrupt(0x21, 4, "shell\0", 0x2000, 0);

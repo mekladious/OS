@@ -263,7 +263,7 @@ int main()
 						{
 							killProcessNum = 7;
 						}
-						interrupt(0x21, killProcessNum, 0, 0, 0);
+						interrupt(0x21, 9, killProcessNum, 0, 0);
 					}
 					else 
 					{

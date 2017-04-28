@@ -21,36 +21,11 @@ int timeUnits;
 
 int main()
 {
-	//M3
-	//writeSector works
-	// char buffer[512];
-	// writeSector("hey\0", 30);
-	// readSector(buffer, 30);
-	// printString(buffer);
-
-	// //deleteFile works
-	//  char* buffer[13312];
-	//  makeInterrupt21();
-	//  interrupt(0x21, 7,"messag\0",0,0);
- 	//  interrupt(0x21, 3,"messag\0",buffer,0);
-	//  interrupt(0x21, 0,buffer,0,0);
-
-	// int i=0;
-	// char buffer1[13312];
-	// char buffer2[13312];
-	// buffer2[0]='h'; buffer2[1]='e'; buffer2[2]='l'; buffer2[3]='l';
-	// buffer2[4]='o';
-	// for(i=5; i<13312; i++) buffer2[i]=0x0;
-	// makeInterrupt21();
-	// interrupt(0x21,8, "testW\0", buffer2, 1); //write file testW
-	// interrupt(0x21,3, "testW\0", buffer1, 0); //read file testW
-	// interrupt(0x21,0, buffer1, 0, 0); // print out contents of testW
-
 	//Step 4
 
 	int i;
 
-	currentProcess=0;
+	//currentProcess=0;
 	timeUnits=0;
 
 	for(i=0;i<8;i++)
@@ -58,16 +33,16 @@ int main()
 		active[i]=0;
 		sp[i]=0xFF00;
 	}
-
+	currentProcess=0;
 
 	makeTimerInterrupt();
 	makeInterrupt21();
 	//terminate();
 
 	//our actual main method
-	//interrupt(0x21, 4, "hello1\0", 0, 0);
-	//interrupt(0x21, 4, "hello2\0", 0, 0);
-	interrupt(0x21, 4, "shell\0", 0, 0);
+	interrupt(0x21, 4, "hello1\0", 0, 0);
+	interrupt(0x21, 4, "hello2\0", 0, 0);
+	// interrupt(0x21, 4, "shell\0", 0, 0);
 	while(1);
 }
 
@@ -231,9 +206,11 @@ void executeProgram(char* name)
 {
 	char buffer[13312];
 	int i=0;
+
 	int segment;
 	setKernelDataSegment();
 	segment = getFreeSegment();
+	restoreDataSegment();
 
 	if(segment==0x0000||segment<=0x1000||segment>0xA000)
 	{
@@ -245,11 +222,13 @@ void executeProgram(char* name)
 		putInMemory(segment, i, buffer[i]);
 		i++;
 	}
-	initializeProgram(segment);
+	// setKernelDataSegment();
+	// active[div(segment,0x1000)-2]=1;
+	// restoreDataSegment();
 
-	setKernelDataSegment();
-	active[div(segment,0x1000)-2]=1;
-	restoreDataSegment();
+	// launchProgram(segment);
+	
+	initializeProgram(segment);
 }
 
 
@@ -261,11 +240,11 @@ int getFreeSegment()
 	{
 		if(active[i]==0)
 		{
-			segment = (i+2)*0x1000;
+			segment = (i+2)*(0x1000);
+			active[i]=1;
 			return segment;
 		}
 	}
-	restoreDataSegment();
 	return 0;
 }
 
@@ -282,7 +261,6 @@ void terminate()
 	interrupt(0x21, 4, shell, 0x2000, 0);*/
 	setKernelDataSegment();
 	active[currentProcess]=0;
-	restoreDataSegment();
 	while(1);
 }
 
@@ -447,9 +425,9 @@ void handleInterrupt21(int ax, int bx, int cx, int dx)
 void handleTimerInterrupt(int segment, int stackPointer)
 {
 	//printString("Tick\n\0");
-	int i,newSegment,newSp;
+	int i,newSegment,newSp,newProcess;
 
-	setKernelDataSegment();
+	// setKernelDataSegment();
 	currentProcess = div(segment,0x1000)-2;
 	timeUnits++;
 
@@ -457,22 +435,28 @@ void handleTimerInterrupt(int segment, int stackPointer)
 		timeUnits=0;
 		sp[currentProcess]=stackPointer;
 		i=currentProcess+1;
-		while(i!=currentProcess)
-		{
-			if(active[i]==1)
-			{
-				currentProcess=i;
-				break;
+		for(i=currentProcess+1;i<(8+currentProcess);i++){
+			if(active[mod(i,8)]==1){
+				newProcess=mod(i,8);
+				newSegment=(newProcess+2)*0x1000;
+				newSp=sp[newProcess];
+				returnFromTimer(newSegment, newSp);
+				return;
 			}
-			if(i==8)
-				i=0;
-			else i++;
 		}
-		newSegment=(currentProcess+2)*0x1000;
-		newSp=sp[currentProcess];
-		returnFromTimer(newSegment, newSp);
+		// while(i!=currentProcess)
+		// {
+		// 	if(active[i]==0)
+		// 	{
+		// 		currentProcess=i;
+		// 		break;
+		// 	}
+		// 	if(i==8)
+		// 		i=0;
+		// 	else i++;
+		//  }
 		return;
 	}
-	restoreDataSegment();
+	// restoreDataSegment();
 	returnFromTimer(segment, stackPointer);
 }

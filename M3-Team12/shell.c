@@ -34,6 +34,7 @@ int main()
 		{
 			if(line[0]!='\0')
 			{
+				//view
 				if(line[0]=='v' && line[1]=='i' && line[2]=='e' && line[3]=='w' && line[4]==' ')
 				{
 					for(j=5; line[j]!='\0'; j++)
@@ -61,6 +62,7 @@ int main()
 					return;
 
 				}
+				//execute
 				else if(line[0]=='e' && line[1]=='x' && line[2]=='e' && line[3]=='c' && line[4]=='u' && line[5]=='t' && line[6]=='e' && line[7]==' ')
 				{
 					for(j=8; line[j]!='\0'; j++)
@@ -83,27 +85,22 @@ int main()
 
 
 				}
+				//delete
 				else if(line[0]=='d' && line[1]=='e' && line[2]=='l' && line[3]=='e' && line[4]=='t' && line[5]=='e' && line[6]==' ')
 				{
-
+					i=0;
 					for(j=7; line[j]!='\0'; j++)
 					{
 						filename[i]=line[j];
 						i++;
 					}
 					filename[i]='\0';
-					interrupt(0x21, 7, filename, 0, 0);
+					deleteFile(fielname);
 
-					line[0]='\0';
-					filename[0]='\0';
-					filename2[0]='\0';
-					new_line[0]='\0';
-					buffer[0]='\0';
-					file[0]='\0';
-					interrupt(0x21, 5, 0, 0, 0);
 					return;
 
 				}
+				//copy
 				else if(line[0]=='c' && line[1]=='o' && line[2]=='p' && line[3]=='y' && line[4]==' ')
 				{
 					i=0;
@@ -168,6 +165,7 @@ int main()
 					return;
 
 				}
+				//dir
 				else if(line[0]=='d' && line[1]=='i' && line[2]=='r')
 				{
 					getDirectory();
@@ -182,6 +180,7 @@ int main()
 					interrupt(0x21, 5, 0, 0, 0);
 					return;
 				}
+				//create
 				 else if(line[0]=='c' && line[1]=='r' && line[2]=='e' && line[3]=='a' && line[4]=='t' && line[5]=='e' && line[6]==' ')
 				 {
 					i=0;
@@ -358,4 +357,10 @@ int getSectorsCount(char* fileName){
 		}
 	}
 	return count;
+}
+void deleteFile(char* filename){
+
+					interrupt(0x21, 7, filename, 0, 0);
+					interrupt(0x21, 5, 0, 0, 0);
+					return;
 }
